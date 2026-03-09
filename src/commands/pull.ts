@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import type { N8NCliConfig } from '../types';
 import { N8NClient } from '../client';
-import { getEnvironment, resolveWorkflowsDir } from '../config';
+import { getEnvironment, resolveWorkflowsBaseDir } from '../config';
 import { extractErrorMessage } from '../error-utils';
 
 function slugify(name: string): string {
@@ -24,7 +24,7 @@ export async function pullCommand(
 ): Promise<void> {
   const envName = options.env ?? config.source;
   const envConfig = getEnvironment(config, envName);
-  const workflowsDir = resolveWorkflowsDir(config);
+  const workflowsDir = path.join(resolveWorkflowsBaseDir(config), envName);
 
   console.log(`\n→ Pulling workflows from environment: ${envName} (${envConfig.url})\n`);
 

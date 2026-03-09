@@ -60,7 +60,7 @@ describe('pullCommand', () => {
 
     await pullCommand(config, {});
 
-    const workflowsDir = path.join(tmpDir, 'workflows');
+    const workflowsDir = path.join(tmpDir, 'workflows', 'develop');
     expect(fs.existsSync(workflowsDir)).toBe(true);
 
     const files = fs.readdirSync(workflowsDir);
@@ -99,7 +99,7 @@ describe('pullCommand', () => {
     await pullCommand(config, {});
     consoleSpy.mockRestore();
 
-    const workflowsDir = path.join(tmpDir, 'workflows');
+    const workflowsDir = path.join(tmpDir, 'workflows', 'develop');
     const files = fs.readdirSync(workflowsDir);
     expect(files).toHaveLength(1);
     expect(files[0]).toBe('another-workflow.json');

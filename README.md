@@ -118,7 +118,7 @@ Run `n8n-sync init` to create a starter `n8n-cli-config.json` in your current di
 | `environments.<name>.apiKey` | `string` | ✅ | n8n API key (Settings → API → Create API Key) |
 | `source` | `string` | ✅ | Default source environment for `pull` and `list` |
 | `target` | `string` | ✅ | Default target environment for `push` |
-| `workflowsDir` | `string` | ❌ | Custom path to store workflow JSON files (default: `./n8n-config/workflows`) |
+| `workflowsDir` | `string` | ❌ | Custom base path for workflow JSON files (default: `./n8n-config`). Pull saves files under `{workflowsDir}/{envName}/`. |
 
 ### Adding more environments
 
@@ -184,11 +184,15 @@ n8n-sync pull --config /path/to/my-config.json
 
 **Output:**
 
-Workflow files are saved to `./n8n-config/workflows/` (or the path set by `workflowsDir` in config), one JSON file per workflow, named using a URL-safe slug of the workflow name.
+Workflow files are saved under `./n8n-config/{envName}/` (or `{workflowsDir}/{envName}/` when `workflowsDir` is set), one JSON file per workflow, named using a URL-safe slug of the workflow name. Each environment gets its own subdirectory so pulling from multiple environments never overwrites each other.
 
 ```
 n8n-config/
-  workflows/
+  develop/
+    send-welcome-email.json
+    sync-contacts-to-crm.json
+    daily-report.json
+  production/
     send-welcome-email.json
     sync-contacts-to-crm.json
     daily-report.json
@@ -326,7 +330,7 @@ You can integrate `n8n-cli-sync` into GitHub Actions, GitLab CI, or any CI/CD sy
 
 ### Custom workflows directory
 
-Set `workflowsDir` in your config to control where workflow files are stored:
+Set `workflowsDir` in your config to control the base path where workflow files are stored. Pull will create a `{envName}/` subdirectory inside it:
 
 ```json
 {
@@ -334,6 +338,8 @@ Set `workflowsDir` in your config to control where workflow files are stored:
   ...
 }
 ```
+
+With the above, `n8n-sync pull --env develop` writes to `./workflows/develop/`.
 
 ### Using with a monorepo
 
