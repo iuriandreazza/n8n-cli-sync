@@ -102,3 +102,17 @@ export function resolveWorkflowsDir(config: N8NCliConfig): string {
   }
   return path.join(process.cwd(), 'n8n-config', 'workflows');
 }
+
+/**
+ * Returns the base directory used by pull to create per-environment subdirectories.
+ * Priority: config.workflowsDir → cwd/n8n-config
+ *
+ * Pull saves workflows to {base}/{envName}/ so that multiple environments
+ * do not overwrite each other.
+ */
+export function resolveWorkflowsBaseDir(config: N8NCliConfig): string {
+  if (config.workflowsDir) {
+    return path.resolve(config.workflowsDir);
+  }
+  return path.join(process.cwd(), 'n8n-config');
+}
