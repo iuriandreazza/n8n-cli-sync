@@ -21,7 +21,7 @@ Published as an npm package. Binary entrypoint: `n8n-sync` → `dist/cli.js`.
 - **Testing**: Jest 29.7+ with ts-jest
 - **Direct execution**: ts-node 10.9+
 - **Linting**: ESLint 9+ with `@typescript-eslint`
-- **Package Manager**: npm (lockfile committed; do not use yarn or bun)
+- **Package Manager**: npm is primary — `package-lock.json` is the committed lockfile. A `yarn.lock` also exists in the repo but npm is the canonical tool. Do not use bun.
 
 ## File Placement
 ```
@@ -87,8 +87,21 @@ npm run test:watch      # Jest watch mode
 npm run test:coverage   # Jest with coverage report
 ```
 
+## npm Publish Config
+- `files` field in `package.json` controls what ships: `dist/`, `n8n-cli-config.example.json`, `README.md`, `LICENSE`
+- `prepublishOnly` script runs `npm run build` automatically before `npm publish`
+- Binary entrypoint: `"n8n-sync": "dist/cli.js"` in the `bin` field
+- The `engines` field enforces `node >= 18.0.0` at install time
+
+## Community & Contribution Docs
+- `CONTRIBUTING.md` — PR guide, Conventional Commits, CoC reference, branch naming, PR checklist
+- `ISSUES.md` — bug report template, feature request template, labels, response expectations
+- `.github/ISSUE_TEMPLATE/` — structured GitHub issue forms (bug_report.yml, feature_request.yml, config.yml)
+
 ## Git Conventions
 - `n8n-cli-config.json` — always gitignored, contains secrets
-- `n8n-config/workflows/*.json` — version-controlled; represent the canonical workflow state
+- `n8n-config/` — gitignored by default (see `.gitignore`); workflows stored here are optional local copies
+- `n8n-config/workflows/*.json` — version-controlled **only if** the gitignore entry is removed; represent the canonical workflow state
 - `dist/` — gitignored, generated artifact
-- Conventional commit messages preferred
+- `dist-test/` — gitignored, ts-jest compilation output
+- Conventional commit messages required (see `CONTRIBUTING.md` for types and scopes)

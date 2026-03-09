@@ -44,29 +44,43 @@ Each module has a single responsibility. Do not mix concerns:
 - Receive `config: N8NCliConfig` and `options: { env?: string }` — no other parameters
 - Resolve environment: `options.env ?? config.source`
 - For each workflow: fetch full details via `client.getWorkflow(id)` after listing (list response may be incomplete)
-- Slugify workflow name for the filename: lowercase, replace non-alphanumeric with `-`, collapse multiple `-`, trim leading/trailing `-`
-- Write one JSON file per workflow to `config.workflowsDir`
+- **Slugify algorithm** for the filename: `name.toLowerCase()`, replace `[^a-z0-9]+` with `-`, collapse multiple `-`, trim leading/trailing `-`. Example: `"My Workflow!"` → `"my-workflow.json"`
+- **Create `workflowsDir` if it doesn’t exist**: `fs.mkdirSync(dir, { recursive: true })` before writing any file
+- Write one JSON file per workflow to `workflowsDir` using the **workflow envelope format**:
+  ```json
+  {
+    "exportedAt": "<ISO 8601 timestamp>",
+    "sourceEnvironment": "<env name>",
+    "workflow": { /* full N8NWorkflow object */ }
+  }
+  ```
 - Individual workflow failures are caught, logged, and do not halt other workflows
 - Print a summary line at the end: `Saved X workflows.` / `Y failed.`
 
 ## Push Command (`src/commands/push.ts`)
 - Receive `config: N8NCliConfig` and `options: { env?: string; activate?: boolean }` — no other parameters
 - Resolve environment: `options.env ?? config.target`
+- Read all `.json` files from `workflowsDir`; **skip `.gitkeep`** files
+- Each file is the **workflow envelope** format written by pull — extract `file.workflow` before processing
 - Fetch all existing workflows from target to build a **name → workflow** map before processing
 - For each local JSON file:
   - Build payload using **explicit whitelist** — only allowed fields:
     - Workflow level: `name`, `active`, `connections`, `settings`, `staticData`, `pinData`, `nodes`
     - Strip: `id`, `createdAt`, `updatedAt`, `versionId`, `meta`, `tags`, `description`, `isArchived`
-  - For each node in `nodes`:
+  - For each node in `nodes`, keep only:
+    - `id`, `name`, `type`, `typeVersion`, `position`, `parameters`, `webhookId`, `disabled`, `notes`, `notesInFlow`, `color`, `executeOnce`, `alwaysOutputData`, `continueOnFail`, `onError`
+    - Always set `credentials: {}` (strip environment-specific credential IDs)
     - Remove `issues` (read-only runtime field — causes API 400 if sent)
-    - Set `credentials` to `{}` (credential IDs are environment-specific)
-    - Preserve all other node fields
   - `active` field: default to `false`; use source value only if `options.activate` is `true`
   - Match by workflow `name` against the target map:
     - Name found → `client.updateWorkflow(existingId, payload)`
     - Name not found → `client.createWorkflow(payload)`
 - Individual workflow failures are caught, logged, and do not halt others
 - Print a summary line: `Created X, updated Y, failed Z.`
+
+## List Command (in `src/cli.ts`)
+- Uses `client.listWorkflows()` only — **no** per-item `getWorkflow` call (list response is sufficient for display)
+- Prints a padded table to stdout: `ID | Name | Status`
 
 ## Config Module (`src/config.ts`)
 - `loadConfig(configPath?: string): N8NCliConfig` is the public API

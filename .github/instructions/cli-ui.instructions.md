@@ -40,7 +40,8 @@ program
 
 ### `init`
 - Creates `n8n-cli-config.json` in the current working directory
-- **Non-destructive**: if the file already exists, print a message and exit normally (exit code 0)
+- **Non-destructive**: if the file already exists, print `Config file already exists: n8n-cli-config.json` and exit normally (exit code 0)
+- On successful creation: print `Created n8n-cli-config.json. Edit it with your environment URLs and API keys.`
 - Pre-populate with `develop` and `production` environment stubs
 
 ### `pull`
@@ -51,12 +52,24 @@ program
 ### `push`
 - Options:
   - `-e, --env <name>` — override `config.target`
-  - `--activate` — preserve the source workflow's `active` state; default without flag: push as **inactive**
+  - `--activate` — preserve the source workflow's `active` state; **default without flag: always push as `active: false`**, regardless of the value in the source file
 - Reads all `.json` files from `workflowsDir`, deploys to the resolved target environment
 
 ### `list`
 - Options: `-e, --env <name>` — override `config.source`
 - Prints a formatted table to stdout: `ID | Name | Status`
+- **Exact output format**:
+  ```
+  → Listing workflows from: develop (http://localhost:5678)
+  
+  ID         Name                                               Status
+  ---------- -------------------------------------------------- ----------
+  1          Send Welcome Email                                 active
+  2          Sync Contacts to CRM                               inactive
+  
+  Total: 2 workflow(s)
+  ```
+- Column widths: ID=10, Name=50, Status=10 (pad with spaces, not tabs)
 
 ## Output Conventions (stdout)
 
@@ -73,12 +86,22 @@ Use these Unicode symbols consistently in `console.log` output:
 
 Example:
 ```
-→ Pulling workflows from develop...
+→ Pulling workflows from: develop (http://localhost:5678)
 ✓ send-welcome-email.json
 ✓ crm-sync.json
 ✗ broken-workflow (HTTP 500 — Internal Server Error)
 Saved 2 workflows. 1 failed.
 ```
+
+### Intro Line Format
+The first line of any command that contacts an n8n instance must follow this format:
+```
+→ {action}: {env} ({url})
+```
+Examples:
+- `→ Pulling workflows from: develop (http://localhost:5678)`
+- `→ Pushing workflows to: production (https://n8n.example.com)`
+- `→ Listing workflows from: staging (https://staging.example.com)`
 
 ### Tables (list command)
 - Pad columns with spaces for alignment

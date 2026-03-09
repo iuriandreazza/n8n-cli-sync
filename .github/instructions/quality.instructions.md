@@ -51,6 +51,43 @@ const WORKFLOW: N8NWorkflow = {
 };
 ```
 
+### Axios Mock Setup (client tests)
+Use this exact pattern to mock Axios:
+```typescript
+jest.mock('axios');
+import axios from 'axios';
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+const mockClient = { get: jest.fn(), post: jest.fn(), put: jest.fn() };
+mockedAxios.create.mockReturnValue(mockClient as any);
+```
+Reset mocks in `beforeEach`: `jest.clearAllMocks()`
+
+### `makeAxiosError()` helper (error-utils tests)
+Create a reusable helper to build test Axios errors:
+```typescript
+function makeAxiosError(status: number, statusText: string, data: unknown) {
+  const err = new Error('Request failed') as any;
+  err.isAxiosError = true;
+  err.response = { status, statusText, data };
+  return err;
+}
+```
+
+### `writeWorkflowFiles()` helper (push tests)
+Pre-populate a temp workflows directory for push tests:
+```typescript
+function writeWorkflowFiles(dir: string, workflows: N8NWorkflow[]) {
+  fs.mkdirSync(dir, { recursive: true });
+  for (const wf of workflows) {
+    const slug = wf.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    fs.writeFileSync(
+      path.join(dir, `${slug}.json`),
+      JSON.stringify({ exportedAt: new Date().toISOString(), sourceEnvironment: 'develop', workflow: wf }, null, 2)
+    );
+  }
+}
+```
+
 ## Temp File Isolation
 Any test that writes to the file system must:
 1. Create a unique temp directory in `beforeEach` using `fs.mkdtempSync(path.join(os.tmpdir(), 'n8n-test-'))`
@@ -98,12 +135,17 @@ afterEach(() => {
 
 ### `src/commands/pull.ts`
 - Fetches all workflows and writes one JSON file per workflow
+- Written file uses the envelope format: `{ exportedAt, sourceEnvironment, workflow }`
 - Workflow name is slugified correctly for the filename
+- `workflowsDir` is created automatically if it does not exist
 - Individual workflow fetch failure logs error and continues (does not throw)
 - `--env` override uses the specified environment instead of `config.source`
 - Summary output reflects correct saved/failed counts
 
 ### `src/commands/push.ts`
+- Throws (or logs fatal error) if `workflowsDir` does not exist
+- Throws (or logs fatal error) if no `.json` files are found in `workflowsDir`
+- `.gitkeep` files are silently skipped
 - Creates a new workflow when name is not found in target
 - Updates an existing workflow when name matches
 - Credential fields on nodes are stripped to `{}`
@@ -118,6 +160,15 @@ afterEach(() => {
 - **Test both success AND failure branches** for every command path
 - **Use specific assertions** — `toEqual` over `toBeTruthy`, `toHaveBeenCalledWith` over `toHaveBeenCalled`
 - **Avoid testing implementation details** — assert observable outcomes (files written, API calls made with correct payloads)
+- **Never leave temp directories behind** — always clean up in `afterEach`
+- **Call `jest.clearAllMocks()` in `beforeEach`** to prevent state leaking between tests
+
+## Lint Rules
+- ESLint 9 with `@typescript-eslint` rules — run `npm run lint`
+- No `any` type — use `unknown` or a concrete type
+- No unused variables or imports
+- Consistent import order (Node built-ins → external packages → internal modules)
+- `console.log` is allowed in source (CLI output); `console.error` is for fatal errors in `cli.ts` only
 - **One assertion concept per `it` block** — split unrelated assertions into separate tests
 - Do not use `setTimeout` or `sleep` in tests — mock async operations instead
 - Never use `jest.useFakeTimers` unless testing time-dependent logic explicitly
