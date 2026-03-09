@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as os from 'os';
 import { pushCommand } from '../../src/commands/push';
 import { N8NClient } from '../../src/client';
-import type { N8NCliConfig, N8NWorkflow, WorkflowFile } from '../../src/types';
+import type { N8NCliConfig, N8NWorkflow } from '../../src/types';
 
 jest.mock('../../src/client');
 
@@ -27,12 +27,6 @@ const WORKFLOW: N8NWorkflow = {
   connections: {},
 };
 
-const WORKFLOW_FILE: WorkflowFile = {
-  exportedAt: '2024-01-01T00:00:00.000Z',
-  sourceEnvironment: 'develop',
-  workflow: WORKFLOW,
-};
-
 const BASE_CONFIG: N8NCliConfig = {
   environments: {
     develop: { url: 'http://localhost:5678', apiKey: 'dev-key' },
@@ -42,11 +36,11 @@ const BASE_CONFIG: N8NCliConfig = {
   target: 'production',
 };
 
-function writeWorkflowFiles(dir: string, files: WorkflowFile[]): void {
+function writeWorkflowFiles(dir: string, workflows: N8NWorkflow[]): void {
   fs.mkdirSync(dir, { recursive: true });
-  for (const file of files) {
-    const slug = file.workflow.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    fs.writeFileSync(path.join(dir, `${slug}.json`), JSON.stringify(file), 'utf-8');
+  for (const workflow of workflows) {
+    const slug = workflow.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    fs.writeFileSync(path.join(dir, `${slug}.json`), JSON.stringify(workflow), 'utf-8');
   }
 }
 
@@ -75,7 +69,7 @@ describe('pushCommand', () => {
   });
 
   it('creates a new workflow when it does not exist on target', async () => {
-    writeWorkflowFiles(path.join(tmpDir, 'workflows'), [WORKFLOW_FILE]);
+    writeWorkflowFiles(path.join(tmpDir, 'workflows'), [WORKFLOW]);
 
     const mockInstance = {
       listWorkflows: jest.fn().mockResolvedValue([]),
@@ -95,7 +89,7 @@ describe('pushCommand', () => {
   });
 
   it('updates an existing workflow matched by name', async () => {
-    writeWorkflowFiles(path.join(tmpDir, 'workflows'), [WORKFLOW_FILE]);
+    writeWorkflowFiles(path.join(tmpDir, 'workflows'), [WORKFLOW]);
 
     const existingOnTarget: N8NWorkflow = { ...WORKFLOW, id: '55' };
     const mockInstance = {
@@ -110,7 +104,7 @@ describe('pushCommand', () => {
   });
 
   it('preserves active state when --activate flag is set', async () => {
-    writeWorkflowFiles(path.join(tmpDir, 'workflows'), [WORKFLOW_FILE]);
+    writeWorkflowFiles(path.join(tmpDir, 'workflows'), [WORKFLOW]);
 
     const mockInstance = {
       listWorkflows: jest.fn().mockResolvedValue([]),
@@ -126,7 +120,7 @@ describe('pushCommand', () => {
   });
 
   it('respects --env option to override the target environment', async () => {
-    writeWorkflowFiles(path.join(tmpDir, 'workflows'), [WORKFLOW_FILE]);
+    writeWorkflowFiles(path.join(tmpDir, 'workflows'), [WORKFLOW]);
 
     const mockInstance = {
       listWorkflows: jest.fn().mockResolvedValue([]),
@@ -143,10 +137,7 @@ describe('pushCommand', () => {
 
   it('continues processing when a single workflow fails', async () => {
     const wf2: N8NWorkflow = { ...WORKFLOW, id: '2', name: 'Second Workflow', active: false };
-    writeWorkflowFiles(path.join(tmpDir, 'workflows'), [
-      WORKFLOW_FILE,
-      { ...WORKFLOW_FILE, workflow: wf2 },
-    ]);
+    writeWorkflowFiles(path.join(tmpDir, 'workflows'), [WORKFLOW, wf2]);
 
     let callCount = 0;
     const mockInstance = {
