@@ -1,0 +1,8 @@
+node_modules/
+dist/
+dist-test/
+coverage/
+*.log
+n8n-cli-config.json
+n8n-config/
+.env

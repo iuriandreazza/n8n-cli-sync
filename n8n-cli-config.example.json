@@ -1,0 +1,14 @@
+{
+  "environments": {
+    "develop": {
+      "url": "http://localhost:6678",
+      "apiKey": "your-dev-n8n-api-key"
+    },
+    "production": {
+      "url": "https://your-prod-n8n-instance.example.com",
+      "apiKey": "your-prod-n8n-api-key"
+    }
+  },
+  "source": "develop",
+  "target": "production"
+}

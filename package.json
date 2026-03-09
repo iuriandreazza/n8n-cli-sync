@@ -1,0 +1,54 @@
+{
+  "name": "n8n-cli-sync",
+  "version": "1.0.0",
+  "description": "CLI tool to sync n8n workflows between environments — pull, push, list, and bootstrap.",
+  "keywords": ["n8n", "workflow", "sync", "cli", "automation", "devops"],
+  "license": "MIT",
+  "author": "Iuri Andreazza",
+  "homepage": "https://github.com/iuriandreazza/n8n-cli-sync#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iuriandreazza/n8n-cli-sync.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iuriandreazza/n8n-cli-sync/issues"
+  },
+  "main": "dist/cli.js",
+  "bin": {
+    "n8n-sync": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "n8n-cli-config.example.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "build:watch": "tsc -p tsconfig.build.json --watch",
+    "dev": "ts-node src/cli.ts",
+    "lint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "commander": "^12.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^22.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.0.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.0"
+  }
+}
