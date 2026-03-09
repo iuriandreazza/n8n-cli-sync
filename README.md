@@ -24,6 +24,7 @@
 - [Security Considerations](#security-considerations)
 - [Development](#development)
 - [Contributing](#contributing)
+- [Reporting Issues](#reporting-issues)
 - [License](#license)
 
 ---
@@ -422,15 +423,24 @@ n8n-cli-sync/
 
 ## Contributing
 
-Contributions, bug reports, and feature requests are welcome!
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for:
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feat/my-feature`
-3. Make your changes, add tests
-4. Run tests: `npm test`
-5. Open a pull request
+- Getting started (fork, clone, setup)
+- Branch naming and Conventional Commits format
+- PR checklist and review process
+- What NOT to do
 
-Please open an issue first to discuss larger changes.
+---
+
+## Reporting Issues
+
+For bug reports, feature requests, and questions, see [ISSUES.md](ISSUES.md).
+
+GitHub's **New Issue** button will present structured templates for:
+- **Bug report** — includes an environment block for version info
+- **Feature request** — includes fields for problem, solution, and alternatives
+
+Security vulnerabilities should be reported **privately** via [GitHub's security advisory](https://github.com/iuriandreazza/n8n-cli-sync/security/advisories/new) — do not open a public issue.
 
 ---
 
