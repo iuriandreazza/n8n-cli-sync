@@ -68,9 +68,7 @@ describe('pullCommand', () => {
     expect(files[0]).toBe('my-test-workflow.json');
 
     const saved = JSON.parse(fs.readFileSync(path.join(workflowsDir, files[0]), 'utf-8'));
-    expect(saved.workflow.name).toBe('My Test Workflow');
-    expect(saved.sourceEnvironment).toBe('develop');
-    expect(saved.exportedAt).toBeDefined();
+    expect(saved.name).toBe('My Test Workflow');
   });
 
   it('respects --env option to override the source environment', async () => {

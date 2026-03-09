@@ -32,7 +32,7 @@
     "dev": "ts-node src/cli.ts",
     "lint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\"",
     "test": "jest",
-    "test:watch": "jest --watch",
+    "test:watch": "jest --watchAll",
     "test:coverage": "jest --coverage",
     "prepublishOnly": "npm run build"
   },
