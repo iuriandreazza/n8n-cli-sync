@@ -5,6 +5,8 @@
 [![npm version](https://img.shields.io/npm/v/n8n-cli-sync.svg)](https://www.npmjs.com/package/n8n-cli-sync)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
+[![Build](https://github.com/iuriandreazza/n8n-cli-sync/actions/workflows/build.yml/badge.svg)](https://github.com/iuriandreazza/n8n-cli-sync/actions/workflows/build.yml)
+[![Tests](https://github.com/iuriandreazza/n8n-cli-sync/actions/workflows/test.yml/badge.svg)](https://github.com/iuriandreazza/n8n-cli-sync/actions/workflows/test.yml)
 
 ---
 
