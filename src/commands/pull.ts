@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import type { N8NCliConfig, WorkflowFile } from '../types';
+import type { N8NCliConfig } from '../types';
 import { N8NClient } from '../client';
 import { getEnvironment, resolveWorkflowsDir } from '../config';
 import { extractErrorMessage } from '../error-utils';
@@ -53,13 +53,7 @@ export async function pullCommand(
       const filename = `${slug}.json`;
       const filePath = path.join(workflowsDir, filename);
 
-      const fileContent: WorkflowFile = {
-        exportedAt: new Date().toISOString(),
-        sourceEnvironment: envName,
-        workflow,
-      };
-
-      fs.writeFileSync(filePath, JSON.stringify(fileContent, null, 2), 'utf-8');
+      fs.writeFileSync(filePath, JSON.stringify(workflow, null, 2), 'utf-8');
       console.log(`  ✓ ${name} → ${filename}`);
       saved++;
     } catch (err) {

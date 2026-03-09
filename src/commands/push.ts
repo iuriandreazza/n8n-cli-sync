@@ -1,11 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import type { N8NCliConfig, N8NWorkflow, WorkflowFile } from '../types';
+import type { N8NCliConfig, N8NWorkflow } from '../types';
 import { N8NClient } from '../client';
 import { getEnvironment, resolveWorkflowsDir } from '../config';
 import { extractErrorMessage } from '../error-utils';
 
-function readWorkflowFiles(workflowsDir: string): WorkflowFile[] {
+function readWorkflowFiles(workflowsDir: string): N8NWorkflow[] {
   if (!fs.existsSync(workflowsDir)) {
     throw new Error(
       `Workflows directory not found: ${workflowsDir}\nRun "n8n-sync pull" first to export workflows.`,
@@ -25,7 +25,7 @@ function readWorkflowFiles(workflowsDir: string): WorkflowFile[] {
   return files.map((filename) => {
     const filePath = path.join(workflowsDir, filename);
     try {
-      return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as WorkflowFile;
+      return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as N8NWorkflow;
     } catch {
       throw new Error(`Failed to parse workflow file: ${filePath}`);
     }
@@ -98,7 +98,7 @@ export async function pushCommand(
   let updated = 0;
   let failed = 0;
 
-  for (const { workflow } of workflowFiles) {
+  for (const workflow of workflowFiles) {
     const payload = buildWorkflowPayload(workflow, activate);
 
     try {

@@ -78,8 +78,4 @@ export interface N8NCliConfig {
   workflowsDir?: string;
 }
 
-export interface WorkflowFile {
-  exportedAt: string;
-  sourceEnvironment: string;
-  workflow: N8NWorkflow;
-}
+
