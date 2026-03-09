@@ -1,0 +1,61 @@
+name: Feature Request
+description: Suggest a new feature or improvement
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement! Before submitting, search
+        [existing issues](https://github.com/iuriandreazza/n8n-cli-sync/issues) to see if it's already been requested.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem It Solves
+      description: |
+        Describe the problem or limitation you're hitting. What can't you do today?
+      placeholder: |
+        When syncing to production, I have no way to preview which workflows
+        would be created or updated without actually pushing them.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: |
+        Describe the feature you'd like. Be specific about the CLI interface —
+        what flag, option, or command would this add?
+      placeholder: |
+        Add a --dry-run flag to push:
+
+          n8n-sync push --dry-run
+
+        Output:
+          → Dry run — no changes will be made
+            + new-workflow (would create)
+            ↻ existing-workflow (would update)
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: |
+        Have you tried workarounds? Are there other ways to solve this
+        that you considered and rejected?
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: |
+        Screenshots, links to related n8n issues, use-case details, or
+        anything else that helps illustrate the request.
+    validations:
+      required: false

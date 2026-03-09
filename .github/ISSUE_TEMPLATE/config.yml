@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question / Support
+    url: https://github.com/iuriandreazza/n8n-cli-sync/issues/new?labels=question&template=
+    about: General questions and support — please search existing issues first
+  - name: Security Vulnerability
+    url: https://github.com/iuriandreazza/n8n-cli-sync/security/advisories/new
+    about: Report a security vulnerability privately (do NOT open a public issue for security bugs)
+  - name: README / Documentation
+    url: https://github.com/iuriandreazza/n8n-cli-sync#readme
+    about: Check the README for usage instructions, configuration reference, and CI/CD examples

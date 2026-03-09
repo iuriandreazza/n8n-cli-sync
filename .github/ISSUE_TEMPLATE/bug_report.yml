@@ -1,0 +1,96 @@
+name: Bug Report
+description: Something isn't working as expected
+title: "fix: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to report a bug. Please fill in as much detail as possible.
+        Before submitting, search [existing issues](https://github.com/iuriandreazza/n8n-cli-sync/issues) to avoid duplicates.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear, concise description of the bug.
+      placeholder: "When I run `n8n-sync push`, it crashes with..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Exact steps to reproduce the behaviour.
+      placeholder: |
+        1. Run: n8n-sync push --env production
+        2. Observe output...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behaviour
+      description: What you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behaviour
+      description: What actually happened. Include the full error output.
+      render: shell
+    validations:
+      required: true
+
+  - type: input
+    id: version_cli
+    attributes:
+      label: n8n-cli-sync version
+      description: Run `n8n-sync --version`
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: version_node
+    attributes:
+      label: Node.js version
+      description: Run `node --version`
+      placeholder: "v20.11.0"
+    validations:
+      required: true
+
+  - type: input
+    id: version_n8n
+    attributes:
+      label: n8n version
+      description: Check n8n Settings → About
+      placeholder: "1.x.x"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - macOS
+        - Linux
+        - Windows
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: |
+        Any other relevant information — config shape (without secrets or API keys),
+        workflow count, network environment, etc.
+    validations:
+      required: false
