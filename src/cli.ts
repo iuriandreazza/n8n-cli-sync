@@ -44,11 +44,12 @@ program
       'Matches by workflow name — creates new or updates existing.',
   )
   .option('-e, --env <name>', 'Environment name (overrides "target" in config)')
+  .option('--from <name>', 'Source environment folder to read workflows from (overrides "source" in config)')
   .option(
     '--activate',
     'Preserve the active/inactive state from the source file (default: push as inactive)',
   )
-  .action(async (options: { env?: string; activate?: boolean }) => {
+  .action(async (options: { env?: string; from?: string; activate?: boolean }) => {
     try {
       const config = loadConfig(program.opts().config as string | undefined);
       await pushCommand(config, options);

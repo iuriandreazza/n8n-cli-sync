@@ -69,7 +69,7 @@ describe('pushCommand', () => {
   });
 
   it('creates a new workflow when it does not exist on target', async () => {
-    writeWorkflowFiles(path.join(tmpDir, 'workflows'), [WORKFLOW]);
+    writeWorkflowFiles(path.join(tmpDir, 'workflows', 'develop'), [WORKFLOW]);
 
     const mockInstance = {
       listWorkflows: jest.fn().mockResolvedValue([]),
@@ -89,7 +89,7 @@ describe('pushCommand', () => {
   });
 
   it('updates an existing workflow matched by name', async () => {
-    writeWorkflowFiles(path.join(tmpDir, 'workflows'), [WORKFLOW]);
+    writeWorkflowFiles(path.join(tmpDir, 'workflows', 'develop'), [WORKFLOW]);
 
     const existingOnTarget: N8NWorkflow = { ...WORKFLOW, id: '55' };
     const mockInstance = {
@@ -104,7 +104,7 @@ describe('pushCommand', () => {
   });
 
   it('preserves active state when --activate flag is set', async () => {
-    writeWorkflowFiles(path.join(tmpDir, 'workflows'), [WORKFLOW]);
+    writeWorkflowFiles(path.join(tmpDir, 'workflows', 'develop'), [WORKFLOW]);
 
     const mockInstance = {
       listWorkflows: jest.fn().mockResolvedValue([]),
@@ -120,7 +120,7 @@ describe('pushCommand', () => {
   });
 
   it('respects --env option to override the target environment', async () => {
-    writeWorkflowFiles(path.join(tmpDir, 'workflows'), [WORKFLOW]);
+    writeWorkflowFiles(path.join(tmpDir, 'workflows', 'develop'), [WORKFLOW]);
 
     const mockInstance = {
       listWorkflows: jest.fn().mockResolvedValue([]),
@@ -137,7 +137,7 @@ describe('pushCommand', () => {
 
   it('continues processing when a single workflow fails', async () => {
     const wf2: N8NWorkflow = { ...WORKFLOW, id: '2', name: 'Second Workflow', active: false };
-    writeWorkflowFiles(path.join(tmpDir, 'workflows'), [WORKFLOW, wf2]);
+    writeWorkflowFiles(path.join(tmpDir, 'workflows', 'develop'), [WORKFLOW, wf2]);
 
     let callCount = 0;
     const mockInstance = {
@@ -158,7 +158,7 @@ describe('pushCommand', () => {
   });
 
   it('throws when workflows directory is empty', async () => {
-    fs.mkdirSync(path.join(tmpDir, 'workflows'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDir, 'workflows', 'develop'), { recursive: true });
 
     const mockInstance = {
       listWorkflows: jest.fn().mockResolvedValue([]),

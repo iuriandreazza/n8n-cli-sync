@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import type { N8NCliConfig, N8NWorkflow } from '../types';
 import { N8NClient } from '../client';
-import { getEnvironment, resolveWorkflowsDir } from '../config';
+import { getEnvironment, resolveWorkflowsBaseDir } from '../config';
 import { extractErrorMessage } from '../error-utils';
 
 function readWorkflowFiles(workflowsDir: string): N8NWorkflow[] {
@@ -71,12 +71,13 @@ function buildWorkflowPayload(
 
 export async function pushCommand(
   config: N8NCliConfig,
-  options: { env?: string; activate?: boolean },
+  options: { env?: string; from?: string; activate?: boolean },
 ): Promise<void> {
   const envName = options.env ?? config.target;
   const envConfig = getEnvironment(config, envName);
   const activate = options.activate ?? false;
-  const workflowsDir = resolveWorkflowsDir(config);
+  const sourceEnvName = options.from ?? config.source;
+  const workflowsDir = path.join(resolveWorkflowsBaseDir(config), sourceEnvName);
 
   console.log(`\n→ Pushing workflows to environment: ${envName} (${envConfig.url})`);
   if (!activate) {
